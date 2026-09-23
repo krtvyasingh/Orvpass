@@ -274,6 +274,58 @@ pub enum Commands {
     /// Display current vault cryptographic status
     Status,
 
+    /// Instant password copy to clipboard
+    Cp { name: String },
+
+    /// Instant username copy to clipboard
+    Cpu { name: String },
+
+    /// Instant 2FA TOTP token copy to clipboard
+    Cpt { name: String },
+
+    /// Single-line instant credential creation
+    QuickAdd {
+        title: String,
+        username: Option<String>,
+        password: Option<String>,
+    },
+
+    /// Open credential URL in default system browser
+    Open { name: String },
+
+    /// View favorite / starred credentials
+    Favorites,
+
+    /// Toggle favorite / starred status of an item
+    Fav { name: String },
+
+    /// View top 5 recently accessed credentials
+    Recent,
+
+    /// Duplicate / clone credential into <name> (Copy)
+    Duplicate { name: String },
+
+    /// Rename vault credential
+    Rename { old_name: String, new_name: String },
+
+    /// List all secure notes
+    Notes,
+
+    /// List all payment cards
+    Cards,
+
+    /// Generate shell fast shortcuts (op, opg, opc, opcu, opct, opl, opgen)
+    InitShell,
+
+    /// Generate 24-word BIP-39 mnemonic seed phrase backup
+    Mnemonic,
+
+    /// Calibrate Argon2id KDF parameters for current hardware
+    Calibrate {
+        #[arg(short, long, default_value_t = 500)]
+        target_ms: u64,
+    },
+
     /// Show version and build identity
     Version,
 }
@@ -475,6 +527,61 @@ fn main() -> anyhow::Result<()> {
         }
         Some(Commands::Status) => {
             commands::status::execute();
+        }
+        Some(Commands::Cp { name }) => {
+            commands::convenience::copy_password_quick(&name);
+        }
+        Some(Commands::Cpu { name }) => {
+            commands::convenience::copy_username_quick(&name);
+        }
+        Some(Commands::Cpt { name }) => {
+            commands::convenience::copy_totp_quick(&name);
+        }
+        Some(Commands::QuickAdd { title, username, password }) => {
+            commands::convenience::quick_add_item(&title, username, password);
+        }
+        Some(Commands::Open { name }) => {
+            commands::open::open_browser(&name);
+        }
+        Some(Commands::Favorites) => {
+            commands::convenience::show_favorites();
+        }
+        Some(Commands::Fav { name }) => {
+            commands::convenience::toggle_favorite(&name);
+        }
+        Some(Commands::Recent) => {
+            commands::convenience::show_recent_items();
+        }
+        Some(Commands::Duplicate { name }) => {
+            commands::convenience::duplicate_credential(&name);
+        }
+        Some(Commands::Rename { old_name, new_name }) => {
+            commands::convenience::rename_credential(&old_name, &new_name);
+        }
+        Some(Commands::Notes) => {
+            commands::convenience::list_secure_notes();
+        }
+        Some(Commands::Cards) => {
+            commands::convenience::list_payment_cards();
+        }
+        Some(Commands::InitShell) => {
+            commands::init_shell::generate_shell_init();
+        }
+        Some(Commands::Mnemonic) => {
+            let words = orvpass_core::mnemonic::generate_24_word_mnemonic();
+            println!("🔐 BIP-39 24-Word Paper Backup Mnemonic:");
+            println!("=========================================");
+            for (idx, word) in words.iter().enumerate() {
+                print!("{:2}. {:<12} ", idx + 1, word);
+                if (idx + 1) % 4 == 0 { println!(); }
+            }
+        }
+        Some(Commands::Calibrate { target_ms }) => {
+            let (m, t, p) = orvpass_core::crypto::calibrate_argon2_params(target_ms);
+            println!("⚡ Argon2id Calibrated Parameters (Target: {}ms):", target_ms);
+            println!("   Memory: {} KiB ({} MB)", m, m / 1024);
+            println!("   Iterations: {}", t);
+            println!("   Parallelism: {} threads", p);
         }
         Some(Commands::Version) => {
             println!("⚡ ORVPASS ENTERPRISE v5.3.0 (Zero-Knowledge Memory-Safe Engine)");
