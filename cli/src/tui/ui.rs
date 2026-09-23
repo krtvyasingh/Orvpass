@@ -25,6 +25,9 @@ pub fn render(frame: &mut Frame, app: &TuiApp) {
     render_categories(frame, app, chunks[1]);
     render_main_content(frame, app, chunks[2]);
     render_footer(frame, app, chunks[3]);
+    if app.show_help_dialog {
+        render_help_dialog(frame, frame.area());
+    }
 }
 
 fn render_header(frame: &mut Frame, app: &TuiApp, area: Rect) {
@@ -419,4 +422,53 @@ fn render_footer(frame: &mut Frame, app: &TuiApp, area: Rect) {
 
     let footer_para = Paragraph::new(help_line).block(footer_block);
     frame.render_widget(footer_para, area);
+}
+
+
+fn render_help_dialog(frame: &mut Frame, area: Rect) {
+    let popup_v = Layout::default()
+        .direction(Direction::Vertical)
+        .constraints([
+            Constraint::Percentage(20),
+            Constraint::Percentage(60),
+            Constraint::Percentage(20),
+        ])
+        .split(area);
+
+    let popup_area = Layout::default()
+        .direction(Direction::Horizontal)
+        .constraints([
+            Constraint::Percentage(20),
+            Constraint::Percentage(60),
+            Constraint::Percentage(20),
+        ])
+        .split(popup_v[1])[1];
+
+    let help_block = Block::default()
+        .title(" ⌨️  KEYBOARD SHORTCUTS REFERENCE (? to close) ")
+        .borders(Borders::ALL)
+        .border_type(BorderType::Double)
+        .border_style(Style::default().fg(Color::Yellow));
+
+    let help_text = vec![
+        Line::from("  [j / k] or [↓ / ↑]   Navigate credential list"),
+        Line::from("  [Tab]                Cycle Category tabs (All, Logins, Notes, Cards, Fav)"),
+        Line::from("  [/]                  Instant fuzzy search filter"),
+        Line::from("  [Esc]                Clear search query / Dismiss modal"),
+        Line::from("  [Enter / c]          Copy password to clipboard (auto-wipes 15s)"),
+        Line::from("  [u]                  Copy username to clipboard"),
+        Line::from("  [t]                  Copy live 2FA TOTP code"),
+        Line::from("  [o]                  Open credential URL in default browser"),
+        Line::from("  [s]                  Toggle Favorite Star ⭐"),
+        Line::from("  [p]                  Toggle mask / reveal password"),
+        Line::from("  [?]                  Toggle this helper dialog"),
+        Line::from("  [q]                  Quit Orvpass TUI dashboard"),
+    ];
+
+    let para = Paragraph::new(help_text)
+        .block(help_block)
+        .style(Style::default().bg(Color::Rgb(15, 23, 42)).fg(Color::White));
+
+    frame.render_widget(Clear, popup_area);
+    frame.render_widget(para, popup_area);
 }

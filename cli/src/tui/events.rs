@@ -53,6 +53,9 @@ pub fn handle_events(app: &mut TuiApp) -> anyhow::Result<()> {
                             crate::commands::convenience::toggle_favorite(&title);
                         }
                     }
+                    KeyCode::Char('?') => {
+                        app.show_help_dialog = !app.show_help_dialog;
+                    }
                     KeyCode::Char('p') => {
                         app.show_password = !app.show_password;
                     }
