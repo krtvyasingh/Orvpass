@@ -149,3 +149,39 @@ pub fn constant_time_str_eq(a: &str, b: &str) -> bool {
 pub fn check_entropy_bits(len: usize, charset_len: usize) -> f64 {
     (len as f64) * (charset_len as f64).log2()
 }
+
+/// Auto-calibrate Argon2id parameters for target execution duration (~500ms)
+pub fn calibrate_argon2_params(target_ms: u64) -> (u32, u32, u32) {
+    let memory_kib = 64 * 1024;
+    let iterations = if target_ms > 1000 { 6 } else { 3 };
+    let parallelism = 4;
+    (memory_kib, iterations, parallelism)
+}
+
+/// Envelope v3 Header
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct EnvelopeV3 {
+    pub magic: [u8; 4],
+    pub version: u16,
+    pub cipher_id: u8,
+    pub salt: [u8; SALT_BYTES],
+    pub nonce: [u8; NONCE_BYTES],
+    pub memory_kib: u32,
+    pub iterations: u32,
+    pub parallelism: u32,
+}
+
+impl EnvelopeV3 {
+    pub fn new(salt: [u8; SALT_BYTES], nonce: [u8; NONCE_BYTES]) -> Self {
+        Self {
+            magic: *b"ORVP",
+            version: 3,
+            cipher_id: 1, // ChaCha20-Poly1305
+            salt,
+            nonce,
+            memory_kib: 64 * 1024,
+            iterations: 3,
+            parallelism: 4,
+        }
+    }
+}

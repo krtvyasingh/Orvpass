@@ -18,3 +18,5 @@ pub mod generator;
 pub mod search;
 
 pub mod sync;
+pub mod mnemonic;
+pub mod sss;
