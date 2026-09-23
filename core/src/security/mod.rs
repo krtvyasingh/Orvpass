@@ -23,3 +23,5 @@ pub fn detect_legacy_kdf(header: &[u8]) -> &'static str {
         "Argon2id (Modern State-of-the-Art)"
     }
 }
+pub mod hibp;
+pub mod password_analyzer;
