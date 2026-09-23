@@ -13,7 +13,7 @@ pub mod vault;
 #[derive(Parser)]
 #[command(
     name = "orvpass",
-    version = "5.0.0",
+    version = "5.5.0",
     about = "⚡ Ultra-fast, zero-knowledge terminal password & secrets manager"
 )]
 pub struct Cli {
@@ -584,7 +584,7 @@ fn main() -> anyhow::Result<()> {
             println!("   Parallelism: {} threads", p);
         }
         Some(Commands::Version) => {
-            println!("⚡ ORVPASS ENTERPRISE v5.3.0 (Zero-Knowledge Memory-Safe Engine)");
+            println!("⚡ ORVPASS ENTERPRISE v5.5.0 (Zero-Knowledge Memory-Safe Engine)");
             println!("Engine: Argon2id + ChaCha20-Poly1305 AEAD");
         }
     }
