@@ -9,3 +9,7 @@ pub mod dotenv;
 pub mod k8s;
 pub mod vault_hcl;
 pub mod otpauth;
+pub mod proton;
+pub mod dashlane;
+pub mod aws_sm;
+pub mod gcp_sm;
