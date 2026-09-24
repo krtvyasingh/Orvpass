@@ -11,7 +11,7 @@
 [![Startup](https://img.shields.io/badge/startup-%3C1ms-brightgreen.svg)](#-cryptographic-specifications--benchmarks)
 
 <p align="center">
-  <b>Sub-1ms Cold Start</b> • <b>Zero GUI Bloat</b> • <b>Interactive TokyoNight TUI</b> • <b>20+ Universal Format Exporters</b> • <b>BIP-39 Mnemonic Backup</b>
+  <b>Sub-1ms Cold Start</b> • <b>Zero GUI Bloat</b> • <b>Interactive TokyoNight TUI</b> • <b>30+ Password Manager Formats</b> • <b>BIP-39 Mnemonic Backup</b>
 </p>
 
 </div>
@@ -23,7 +23,7 @@
 - [⚡ Daily User Convenience Suite](#-daily-user-convenience-suite)
 - [🚀 Quick Installation](#-quick-installation)
 - [🎮 Interactive TokyoNight TUI](#-interactive-tokyonight-tui)
-- [🌐 Universal Import & Export Engine](#-universal-import--export-engine)
+- [🌐 Universal Import & Export Engine (30+ Formats)](#-universal-import--export-engine-30-formats)
 - [🛠️ Comprehensive CLI Reference](#-comprehensive-cli-reference)
 - [🔒 Cryptographic Specifications & Benchmarks](#-cryptographic-specifications--benchmarks)
 - [🐚 Shell Integration & Auto-Aliases](#-shell-integration--auto-aliases)
@@ -53,12 +53,15 @@ Orvpass v5.5.0 includes high-frequency shortcuts designed for daily-driver devel
 | `orvpass cpt <name>` | Instantly copy live 6-digit 2FA TOTP token |
 | `orvpass quick-add <title> [user] [pass]` | Single-line instant credential creation (auto-generates pass if omitted) |
 | `orvpass open <name>` | Launch credential website directly in your default browser |
+| `orvpass pick` | Instant interactive fuzzy selector to copy credentials in 1 keystroke |
+| `orvpass health` | 0-100 Vault Health & Security Rating breakdown |
+| `orvpass backup` / `restore` | Encrypted snapshot archives with SHA-256 integrity verification |
+| `orvpass attach` / `extract` | Encrypt & attach private keys/files directly into credential items |
+| `orvpass history <name>` | View credential revision timeline & integrity history |
 | `orvpass fav <name>` / `orvpass favorites` | Star/unstar credential or view favorites list |
 | `orvpass recent` | View 5 most recently accessed/modified secrets |
 | `orvpass duplicate <name>` | Clone existing credential into `<name> (Copy)` |
 | `orvpass rename <old> <new>` | Rename vault item with zero data loss |
-| `orvpass notes` | Dedicated filter for secure notes |
-| `orvpass cards` | Dedicated filter for payment cards |
 | `orvpass mnemonic` | Generate 24-word BIP-39 emergency paper backup phrase |
 | `orvpass calibrate` | Hardware auto-tune Argon2id parameters |
 | `eval "$(orvpass init-shell)"` | Install lightning shell aliases (`op`, `opg`, `opc`, `opcu`, `opct`, `opl`, `opgen`) |
@@ -129,25 +132,27 @@ orvpass tui
 
 ---
 
-## 🌐 Universal Import & Export Engine
+## 🌐 Universal Import & Export Engine (30+ Formats)
 
-Orvpass v5.5.0 supports bidirectional zero-data-loss migration for **20+ vault schemas and secret formats**:
+Orvpass v5.5.0 supports bidirectional zero-data-loss migration for **every major password manager, web browser, 2FA authenticator, and cloud secret format**:
 
-| Category | Supported Formats | Auto-Detected Signatures |
+| Domain | Supported Formats | Import / Export Capabilities |
 | :--- | :--- | :--- |
-| **Password Managers** | Bitwarden (`.json`), 1Password (`.csv`, 1pif), KeePass (`.kdbx`, XML), LastPass (`.csv`), Proton Pass, Dashlane, RoboForm, Enpass, SafeInCloud, Buttercup, Passbolt | JSON schemas, KeePass XML root, standard CSV headers |
-| **Web Browsers** | Google Chrome, Mozilla Firefox, Microsoft Edge, Brave, Opera, Vivaldi, Apple Safari CSV | Header structure analysis, delimiter auto-detection |
-| **Cloud & DevOps** | Kubernetes Secret YAML (`stringData`), HashiCorp Vault (KV v2 JSON/HCL), AWS Secrets Manager, GCP Secret Manager, Infisical, Doppler, `.env` / `.env.vault` | Key-value normalization, env uppercase mapping |
-| **2FA Authenticators** | OTPAuth URI catalogs (`otpauth://totp/...`), Aegis JSON, 2FAS JSON | RFC 6238 URI parser, Secret key extraction |
+| **Password Managers** | **Bitwarden** (`.json`), **1Password** (`.csv`, `.1pux`, `.1pif`), **KeePass** (`.kdbx`, XML, CSV), **LastPass** (`.csv`), **NordPass** (`.csv`), **Proton Pass** (`.json`), **Dashlane** (`.json`, `.csv`), **Keeper** (`.json`, `.csv`), **Zoho Vault** (`.csv`), **RoboForm** (`.csv`), **Enpass** (`.json`), **SafeInCloud** (`.xml`, `.csv`), **Buttercup** (`.json`), **Passbolt** (`.csv`) | Bidirectional schema normalization, category mapping, notes, custom fields, tags |
+| **Web Browsers** | **Google Chrome**, **Mozilla Firefox**, **Microsoft Edge**, **Brave**, **Apple Safari**, **Opera & Opera GX**, **Vivaldi**, **Arc Browser**, **Tor Browser**, **DuckDuckGo Browser** | Native CSV import & export, automated column header mapping, delimiter detection |
+| **2FA Authenticators** | **Standard OTPAuth URIs** (`otpauth://totp/...`), **Aegis 2FA** (`.json`), **2FAS Authenticator** (`.json`, `.2fas`), **FreeOTP**, **Authy** | RFC 6238 secret extraction, SHA1/SHA256 support, token labeling |
+| **Cloud & DevOps** | **Kubernetes Secrets** (`v1/Secret` YAML), **HashiCorp Vault** (KV v2 JSON), **AWS Secrets Manager**, **GCP Secret Manager**, **Azure Key Vault**, **Infisical**, **Doppler**, **Terraform tfvars** (`.json`), **.env / .env.vault** | Key-value normalization, env uppercase mapping, Base64 encoding |
 
 ```bash
-# Import external vault
+# Import external vault from any file
 orvpass import bitwarden_export.json
-orvpass import passwords.csv
+orvpass import nordpass.csv
+orvpass import aegis_backup.json
 
 # Export vault to any target format
 orvpass export --format bitwarden vault_export.json
 orvpass export --format k8s my_secrets.yaml
+orvpass export --format tfvars terraform.tfvars.json
 orvpass export --format dotenv .env
 ```
 
@@ -162,9 +167,16 @@ orvpass cpu <name>                    # Instant username copy
 orvpass cpt <name>                    # Instant 2FA TOTP token copy
 orvpass quick-add <name> [user] [pwd] # Fast inline credential add
 orvpass open <name>                   # Launch credential URL in browser
-orvpass recent                        # List top 5 recently accessed credentials
+orvpass pick                          # Interactive 1-keystroke credential selector
+orvpass health                        # 0-100 Vault Health score & diagnostics
+orvpass backup [--output path]        # Create encrypted snapshot backup
+orvpass restore <file>                # Restore vault from backup
+orvpass attach <item> <file>          # Encrypt and attach file to item
+orvpass extract <item> <file>         # Decrypt and extract attached file
+orvpass history <name>                # View credential revision timeline
 orvpass favorites                     # Filter starred items
 orvpass fav <name>                    # Star or unstar item
+orvpass recent                        # List top 5 recently accessed credentials
 orvpass duplicate <name>              # Clone credential
 orvpass rename <old> <new>            # Rename credential
 orvpass notes                         # List all secure notes
@@ -234,9 +246,9 @@ orvpass orvsend <text> [--expires 24] # Ephemeral end-to-end encrypted secret dr
 
 | Cryptographic Component | Algorithm / Specification | Benchmark Metric |
 | :--- | :--- | :--- |
-| **Key Derivation Function** | Argon2id ($m=64	ext{ MB}, t=3, p=4$) | $\sim 104	ext{ ms}$ (SIMD accelerated) |
-| **Authenticated Encryption** | ChaCha20-Poly1305 ($256	ext{-bit}$ key, $96	ext{-bit}$ nonce) | $386.83	ext{ MB/s}$ throughput |
-| **Post-Quantum Key Exchange** | ML-KEM-768 (NIST FIPS 203) + X25519 Hybrid | $< 1	ext{ ms}$ key encapsulation |
+| **Key Derivation Function** | Argon2id ($m=64\text{ MB}, t=3, p=4$) | $\sim 104\text{ ms}$ (SIMD accelerated) |
+| **Authenticated Encryption** | ChaCha20-Poly1305 ($256\text{-bit}$ key, $96\text{-bit}$ nonce) | $386.83\text{ MB/s}$ throughput |
+| **Post-Quantum Key Exchange** | ML-KEM-768 (NIST FIPS 203) + X25519 Hybrid | $< 1\text{ ms}$ key encapsulation |
 | **Secret Sharding** | Shamir's Secret Sharing ($k=3, n=5$, GF($2^8$)) | Instant polynomial reconstruction |
 | **Paper Backup Recovery** | BIP-39 Standard 24-Word Mnemonic | Standardized deterministic entropy |
 | **Timing-Safe Comparison** | Constant-time slice comparison (`subtle`) | Resistance to side-channel analysis |
@@ -254,13 +266,13 @@ eval "$(orvpass init-shell)"
 ```
 
 Installed aliases:
-- `op` $	o$ `orvpass`
-- `opg` $	o$ `orvpass get`
-- `opc` $	o$ `orvpass cp` (copy password)
-- `opcu` $	o$ `orvpass cpu` (copy username)
-- `opct` $	o$ `orvpass cpt` (copy 2FA TOTP)
-- `opl` $	o$ `orvpass list`
-- `opgen` $	o$ `orvpass generate`
+- `op` -> `orvpass`
+- `opg` -> `orvpass get`
+- `opc` -> `orvpass cp` (copy password)
+- `opcu` -> `orvpass cpu` (copy username)
+- `opct` -> `orvpass cpt` (copy 2FA TOTP)
+- `opl` -> `orvpass list`
+- `opgen` -> `orvpass generate`
 
 Generate autocomplete scripts:
 ```bash
