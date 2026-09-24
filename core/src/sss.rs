@@ -1,6 +1,4 @@
 // Pure-Rust Shamir Secret Sharing (k-of-n) over GF(2^8)
-use rand::RngCore;
-
 pub fn split_secret(secret: &[u8], k: usize, n: usize) -> Vec<String> {
     let mut shards = Vec::new();
     for i in 1..=n {

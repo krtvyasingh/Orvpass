@@ -1,4 +1,4 @@
-use crate::models::{ItemData, ItemType, LoginData, VaultItem};
+use crate::models::VaultItem;
 
 pub fn parse_brave_csv(csv_str: &str) -> Vec<VaultItem> {
     crate::import_export::parsers::chrome::parse_chrome_csv(csv_str)
