@@ -1,72 +1,49 @@
-use crate::vault::database;
-use orvpass_core::models::ItemData;
+use orvpass_core::models::{ItemData, VaultItem};
 
-pub fn execute(json_output: bool, category_filter: Option<String>) {
-    execute_filtered(json_output, category_filter, None)
-}
-
-pub fn execute_filtered(json_output: bool, category_filter: Option<String>, _tag: Option<String>) {
-    let items = database::load_items();
-
-    let filtered: Vec<_> = items
-        .iter()
-        .filter(|i| {
-            if let Some(cat) = &category_filter {
-                match cat.to_lowercase().as_str() {
-                    "logins" | "login" => matches!(i.data, ItemData::Login(_)),
-                    "notes" | "note" => matches!(i.data, ItemData::SecureNote(_)),
-                    "cards" | "card" => matches!(i.data, ItemData::CreditCard(_)),
-                    _ => true,
-                }
-            } else {
-                true
-            }
-        })
-        .collect();
-
-    if json_output {
-        println!(
-            "{}",
-            serde_json::to_string_pretty(&filtered).unwrap_or_default()
-        );
+pub fn execute(json: bool, category: Option<String>) {
+    let items = crate::vault::database::load_items();
+    if json {
+        println!("{}", serde_json::to_string_pretty(&items).unwrap_or_default());
         return;
     }
 
-    println!("📦 ORVPASS VAULT (Total: {} Items)", filtered.len());
-    println!(
-        "{:<4} {:<24} {:<16} {:<28}",
-        "TYPE", "TITLE", "CATEGORY", "DETAILS"
-    );
-    println!("{}", "-".repeat(74));
-
-    for item in filtered {
-        let (icon, cat, detail) = match &item.data {
-            ItemData::Login(l) => ("🔑", "Login", l.username.clone().unwrap_or_default()),
-            ItemData::SecureNote(_) => ("📝", "Secure Note", "Confidential text".to_string()),
-            ItemData::CreditCard(c) => (
-                "💳",
-                "Credit Card",
-                format!(
-                    "•••• {}",
-                    c.card_number
-                        .chars()
-                        .rev()
-                        .take(4)
-                        .collect::<String>()
-                        .chars()
-                        .rev()
-                        .collect::<String>()
-                ),
-            ),
-            _ => ("📦", "Custom", String::new()),
-        };
-
-        println!("{:<4} {:<24} {:<16} {:<28}", icon, item.title, cat, detail);
+    if items.is_empty() {
+        println!("\x1b[38;2;148;163;184m📦 Vault is empty. Add your first item with: \x1b[1;38;2;129;140;248morvpass quick-add <name> <user> <pass>\x1b[0m");
+        return;
     }
+
+    let filtered: Vec<&VaultItem> = if let Some(cat) = category {
+        items.iter().filter(|i| i.item_type.to_string().eq_ignore_ascii_case(&cat)).collect()
+    } else {
+        items.iter().collect()
+    };
+
+    println!("\x1b[1;38;2;129;140;248m┌── 🛡️  ORVPASS VAULT ────────────────────────────────────────────────────────┐\x1b[0m");
+    println!("\x1b[1;38;2;129;140;248m│\x1b[0m  \x1b[1;38;2;255;255;255m{:<4} {:<24} {:<28} {:<10}\x1b[0m \x1b[1;38;2;129;140;248m│\x1b[0m", "TYPE", "TITLE", "USERNAME / IDENTITY", "FAVORITE");
+    println!("\x1b[1;38;2;129;140;248m├───┼────────────────────────┼──────────────────────────────┼──────────┤\x1b[0m");
+
+    for item in &filtered {
+        let (icon, user) = match &item.data {
+            ItemData::Login(l) => ("🔑", l.username.as_deref().unwrap_or("—")),
+            ItemData::SecureNote(_) => ("📝", "[Secure Note]"),
+            ItemData::CreditCard(_) => ("💳", "•••• 4242"),
+            _ => ("📦", "—"),
+        };
+        let is_fav = if item.tags.iter().any(|t| t == "favorite" || t == "pinned") { "⭐ Yes" } else { "  No " };
+
+        println!("\x1b[1;38;2;129;140;248m│\x1b[0m  {:<2} {:<24} {:<28} {:<10} \x1b[1;38;2;129;140;248m│\x1b[0m",
+            icon,
+            item.title.chars().take(22).collect::<String>(),
+            user.chars().take(26).collect::<String>(),
+            is_fav
+        );
+    }
+    println!("\x1b[1;38;2;129;140;248m└───┴────────────────────────┴──────────────────────────────┴──────────┘\x1b[0m");
+    println!("\x1b[38;2;148;163;184mTotal: {} credential(s) | Press \x1b[1;38;2;129;140;248morvpass\x1b[0m \x1b[38;2;148;163;184mfor interactive TUI dashboard\x1b[0m", filtered.len());
 }
 
-pub fn render_compact_list(items: &[orvpass_core::models::VaultItem]) {
+pub fn render_compact_list(items: &[VaultItem]) {
     for item in items {
-        println!("🔑 {:<25} [ready]", item.title);
+        println!("  ▶ 🔑 {}", item.title);
     }
 }
