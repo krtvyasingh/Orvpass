@@ -19,3 +19,7 @@ pub mod totp;
 pub mod convenience;
 pub mod open;
 pub mod init_shell;
+pub mod pick;
+pub mod attach;
+pub mod history;
+pub mod config_cmd;
