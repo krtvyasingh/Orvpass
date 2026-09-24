@@ -84,12 +84,16 @@ pub enum Commands {
         copy_timeout: u64,
     },
 
-    /// Generate cryptographically secure password or Diceware passphrase
+    /// Generate cryptographically secure password, PIN, or Diceware passphrase
     Generate {
         #[arg(short, long, default_value_t = 20)]
         length: usize,
         #[arg(short, long)]
         diceware: bool,
+        #[arg(short, long)]
+        copy: bool,
+        #[arg(long)]
+        pin: Option<usize>,
     },
 
     /// Run a command injecting vault secrets directly into child process RAM environment
@@ -326,6 +330,9 @@ pub enum Commands {
         target_ms: u64,
     },
 
+    /// Auto-detect active shell and configuration tips
+    WhichShell,
+
     /// Show version and build identity
     Version,
 }
@@ -372,9 +379,21 @@ fn main() -> anyhow::Result<()> {
         }) => {
             commands::totp::execute(&name, watch, copy);
         }
-        Some(Commands::Generate { length, diceware }) => {
-            let pass = commands::generate::execute(length, diceware);
-            println!("{}", pass);
+        Some(Commands::Generate { length, diceware, copy, pin }) => {
+            if let Some(digits) = pin {
+                let pin_str = commands::generate::generate_pin(digits);
+                if copy {
+                    crate::clipboard::copy_with_notification(&pin_str, 15);
+                } else {
+                    println!("{}", pin_str);
+                }
+            } else if copy {
+                let pass = commands::generate::generate_and_copy(length, diceware);
+                println!("{}", pass);
+            } else {
+                let pass = commands::generate::execute(length, diceware);
+                println!("{}", pass);
+            }
         }
         Some(Commands::Run { command }) => {
             let items = vault::database::load_items();
@@ -583,9 +602,14 @@ fn main() -> anyhow::Result<()> {
             println!("   Iterations: {}", t);
             println!("   Parallelism: {} threads", p);
         }
+        Some(Commands::WhichShell) => {
+            commands::convenience::detect_current_shell();
+        }
         Some(Commands::Version) => {
-            println!("⚡ ORVPASS ENTERPRISE v5.5.0 (Zero-Knowledge Memory-Safe Engine)");
-            println!("Engine: Argon2id + ChaCha20-Poly1305 AEAD");
+            output::banner();
+            println!("  Engine:   Argon2id (m=64MB, t=3, p=4) + ChaCha20-Poly1305 AEAD");
+            println!("  Security: Zero-Knowledge | ZeroizeOnDrop RAM Sanitization");
+            println!("  License:  Apache-2.0 | Pure Rust Edition");
         }
     }
 

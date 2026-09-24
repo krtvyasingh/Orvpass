@@ -1,3 +1,4 @@
+#![allow(dead_code)]
 use orvpass_core::models::{ItemData, VaultItem};
 use std::time::{SystemTime, UNIX_EPOCH};
 
