@@ -6,12 +6,12 @@
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 [![Rust](https://img.shields.io/badge/language-Rust_1.85+-orange.svg)](https://www.rust-lang.org)
 [![Security](https://img.shields.io/badge/crypto-Argon2id_%2B_ChaCha20--Poly1305-emerald.svg)](SECURITY.md)
-[![Release](https://img.shields.io/badge/release-v5.4.0-indigo.svg)](https://github.com/krtvysinghh/Orvpass/releases/tag/v5.4.0)
-[![CI Tests](https://img.shields.io/badge/tests-67%2F67_passing-success.svg)](https://github.com/krtvysinghh/Orvpass/actions)
-[![Startup](https://img.shields.io/badge/startup-%3C3ms-brightgreen.svg)](#-cryptographic-specifications--benchmarks)
+[![Release](https://img.shields.io/badge/release-v5.5.0-indigo.svg)](https://github.com/krtvyasingh/Orvpass/releases/tag/v5.5.0)
+[![CI Tests](https://img.shields.io/badge/tests-100%25_passing-success.svg)](https://github.com/krtvyasingh/Orvpass/actions)
+[![Startup](https://img.shields.io/badge/startup-%3C1ms-brightgreen.svg)](#-cryptographic-specifications--benchmarks)
 
 <p align="center">
-  <b>Sub-3ms Cold Start</b> • <b>Zero GUI Dependencies</b> • <b>Interactive TokyoNight TUI</b> • <b>20+ Universal Format Exporters</b> • <b>Post-Quantum Ready</b>
+  <b>Sub-1ms Cold Start</b> • <b>Zero GUI Bloat</b> • <b>Interactive TokyoNight TUI</b> • <b>20+ Universal Format Exporters</b> • <b>BIP-39 Mnemonic Backup</b>
 </p>
 
 </div>
@@ -33,10 +33,10 @@
 
 ## 💡 Why Terminal-Native?
 
-Orvpass v5.x represents a complete paradigm shift toward a **pure, lightning-fast Rust CLI and interactive TUI**. All webview runtimes, Electron-style bloatware, and heavy mobile wrappers have been eliminated in favor of UNIX purity:
+Orvpass v5.5.0 is a **pure, lightning-fast Rust CLI and interactive TUI**. All webview runtimes, Electron-style wrappers, and mobile build bloat have been eliminated in favor of UNIX purity:
 
-- ⚡ **Sub-3ms Cold Startup**: Instantaneous command execution and clipboard piping with zero latency.
-- 🛡️ **Zero Attack Surface**: No browser DOM vulnerabilities, no embedded JavaScript runtimes, and zero telemetry.
+- ⚡ **Sub-1ms Cold Startup**: Instantaneous command execution and clipboard piping with zero latency.
+- 🛡️ **Zero Attack Surface**: No browser DOM vulnerabilities, no embedded JavaScript runtimes, and zero third-party telemetry.
 - 🧼 **Deterministic Memory Safety**: Sensitive secrets exist in RAM only while in use and are wiped via Rust's `ZeroizeOnDrop` trait immediately upon destruction.
 - 🔗 **UNIX Pipeline Ergonomics**: Seamlessly pipe secrets into processes (`orvpass run -- npm start`), stdout streams, or scripts without trailing line breaks.
 
@@ -44,7 +44,7 @@ Orvpass v5.x represents a complete paradigm shift toward a **pure, lightning-fas
 
 ## ⚡ Daily User Convenience Suite
 
-Orvpass v5.4.0 introduces dedicated high-frequency shortcuts designed for daily-driver developer workflows:
+Orvpass v5.5.0 includes high-frequency shortcuts designed for daily-driver developer workflows:
 
 | Fast Command | Purpose |
 | :--- | :--- |
@@ -53,13 +53,14 @@ Orvpass v5.4.0 introduces dedicated high-frequency shortcuts designed for daily-
 | `orvpass cpt <name>` | Instantly copy live 6-digit 2FA TOTP token |
 | `orvpass quick-add <title> [user] [pass]` | Single-line instant credential creation (auto-generates pass if omitted) |
 | `orvpass open <name>` | Launch credential website directly in your default browser |
-| `orvpass fav toggle <name>` | Instantly star/unstar favorite credential |
-| `orvpass favorites` | View starred credentials list |
+| `orvpass fav <name>` / `orvpass favorites` | Star/unstar credential or view favorites list |
 | `orvpass recent` | View 5 most recently accessed/modified secrets |
 | `orvpass duplicate <name>` | Clone existing credential into `<name> (Copy)` |
 | `orvpass rename <old> <new>` | Rename vault item with zero data loss |
 | `orvpass notes` | Dedicated filter for secure notes |
 | `orvpass cards` | Dedicated filter for payment cards |
+| `orvpass mnemonic` | Generate 24-word BIP-39 emergency paper backup phrase |
+| `orvpass calibrate` | Hardware auto-tune Argon2id parameters |
 | `eval "$(orvpass init-shell)"` | Install lightning shell aliases (`op`, `opg`, `opc`, `opcu`, `opct`, `opl`, `opgen`) |
 
 ---
@@ -68,25 +69,25 @@ Orvpass v5.4.0 introduces dedicated high-frequency shortcuts designed for daily-
 
 ### 🍺 Via Homebrew (macOS & Linux)
 ```bash
-brew tap krtvysinghh/tap
+brew tap krtvyasingh/tap
 brew install orvpass-cli
 ```
 
 ### ⚡ Via 1-Line Shell Installer
 ```bash
-curl -fsSL https://raw.githubusercontent.com/krtvysinghh/Orvpass/main/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/krtvyasingh/Orvpass/main/install.sh | sh
 ```
 
 ### 🦀 Via Cargo
 ```bash
-cargo install --git https://github.com/krtvysinghh/Orvpass.git orvpass-cli
+cargo install --git https://github.com/krtvyasingh/Orvpass.git orvpass-cli
 ```
 
 ---
 
 ## 🎮 Interactive TokyoNight TUI
 
-Launch the rich, full-featured terminal dashboard:
+Launch the full-featured terminal dashboard:
 ```bash
 orvpass
 # or
@@ -94,7 +95,7 @@ orvpass tui
 ```
 
 ```text
-┌── 🛡️  ORVPASS v5.4.0 Enterprise [Argon2id+ChaCha20] ───────────────┬── 🔍 Press '/' to fuzzy search vault credentials... ──┐
+┌── 🛡️  ORVPASS v5.5.0 Enterprise [Argon2id+ChaCha20] ───────────────┬── 🔍 Press '/' to fuzzy search vault credentials... ──┐
 │                                                                    │                                                        │
 ├────────────────────────────────────────────────────────────────────┴────────────────────────────────────────────────────────┤
 │ [📦 All Items] | [🔑 Logins] | [📝 Secure Notes] | [💳 Credit Cards] | [⭐ Favorites]                                      │
@@ -106,7 +107,7 @@ orvpass tui
 │       •••• 4242                          │ 2FA TOTP:  482910 (24s left)       [t to copy]                                   │
 │                                          │ URL:       https://github.com      [o to open browser]                           │
 ├──────────────────────────────────────────┴──────────────────────────────────────────────────────────────────────────────────┤
-│  Ready  | [j/k] Nav | [Tab] Category | [/] Search | [Enter/c] Copy | [u] User | [t] TOTP | [o] Open | [s] Star | [q] Quit   │
+│  Ready  | [j/k] Nav | [Tab] Category | [/] Search | [Enter/c] Copy | [u] User | [t] TOTP | [o] Open | [s] Star | [?] Help   │
 └─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -123,14 +124,14 @@ orvpass tui
 | `o` | Launch item URL in default system browser |
 | `s` | Toggle Star (Favorite) status |
 | `p` | Mask / Reveal password in inspector pane |
-| `?` | Toggle hotkey helper dialog |
+| `?` | Toggle full keyboard shortcuts modal dialog |
 | `q` | Quit dashboard |
 
 ---
 
 ## 🌐 Universal Import & Export Engine
 
-Orvpass v5.4.0 supports zero-data-loss bidirectional migration for **20+ vault schemas and secret formats**:
+Orvpass v5.5.0 supports bidirectional zero-data-loss migration for **20+ vault schemas and secret formats**:
 
 | Category | Supported Formats | Auto-Detected Signatures |
 | :--- | :--- | :--- |
@@ -163,22 +164,25 @@ orvpass quick-add <name> [user] [pwd] # Fast inline credential add
 orvpass open <name>                   # Launch credential URL in browser
 orvpass recent                        # List top 5 recently accessed credentials
 orvpass favorites                     # Filter starred items
-orvpass fav toggle <name>             # Star or unstar item
+orvpass fav <name>                    # Star or unstar item
 orvpass duplicate <name>              # Clone credential
 orvpass rename <old> <new>            # Rename credential
 orvpass notes                         # List all secure notes
 orvpass cards                         # List all payment cards
+orvpass mnemonic                      # BIP-39 24-word paper backup phrase
+orvpass calibrate                     # Argon2id hardware benchmark tuner
+orvpass which-shell                   # Shell detection & configuration guide
 ```
 
 ### 🔐 2. Core Vault Management
 ```bash
-orvpass list [--json] [-c category]   # View vault contents (table or JSON)
+orvpass list [--json] [-c category]   # View vault contents (beautiful Unicode table or JSON)
 orvpass get <name> [-p] [-u] [-t]     # Retrieve specific credentials
 orvpass add [name]                    # Full interactive wizard
 orvpass remove <name>                 # Delete vault item
 orvpass search <query>                # Fuzzy search across vault
 orvpass totp <name> [-w]              # Watch live 2FA countdown ticker
-orvpass generate [-l 24] [-d]         # Generate cryptographically secure password
+orvpass generate [-l 24] [-d] [--pin] # Generate password, PIN, or Diceware passphrase
 orvpass status                        # Vault cryptographic diagnostics
 ```
 
@@ -208,6 +212,7 @@ orvpass dead-man-switch [--arm]       # Automated emergency shard release timer
 ```bash
 orvpass audit [--json]                # Watchdog audit (weak, reused, expired secrets)
 orvpass pwned-check                   # Offline k-anonymity breach check (HIBP)
+orvpass strength <password>           # Zxcvbn-style entropy and crack-time analyzer
 orvpass cert-expiry                   # Inspect TLS certs and SSH key expirations
 orvpass qr <name>                     # Display ANSI terminal QR code for mobile scan
 orvpass leak-detector                 # Install Git pre-commit secret leak hook
@@ -229,10 +234,11 @@ orvpass orvsend <text> [--expires 24] # Ephemeral end-to-end encrypted secret dr
 
 | Cryptographic Component | Algorithm / Specification | Benchmark Metric |
 | :--- | :--- | :--- |
-| **Key Derivation Function** | Argon2id ($m=64\text{ MB}, t=3, p=4$) | $\sim 104\text{ ms}$ (SIMD accelerated) |
-| **Authenticated Encryption** | ChaCha20-Poly1305 ($256\text{-bit}$ key, $96\text{-bit}$ nonce) | $386.83\text{ MB/s}$ throughput |
-| **Post-Quantum Key Exchange** | ML-KEM-768 (NIST FIPS 203) + X25519 Hybrid | $< 1\text{ ms}$ key encapsulation |
+| **Key Derivation Function** | Argon2id ($m=64	ext{ MB}, t=3, p=4$) | $\sim 104	ext{ ms}$ (SIMD accelerated) |
+| **Authenticated Encryption** | ChaCha20-Poly1305 ($256	ext{-bit}$ key, $96	ext{-bit}$ nonce) | $386.83	ext{ MB/s}$ throughput |
+| **Post-Quantum Key Exchange** | ML-KEM-768 (NIST FIPS 203) + X25519 Hybrid | $< 1	ext{ ms}$ key encapsulation |
 | **Secret Sharding** | Shamir's Secret Sharing ($k=3, n=5$, GF($2^8$)) | Instant polynomial reconstruction |
+| **Paper Backup Recovery** | BIP-39 Standard 24-Word Mnemonic | Standardized deterministic entropy |
 | **Timing-Safe Comparison** | Constant-time slice comparison (`subtle`) | Resistance to side-channel analysis |
 | **RAM Sanitization** | `ZeroizeOnDrop` memory overwrite | Zero memory retention on exit |
 
@@ -248,13 +254,13 @@ eval "$(orvpass init-shell)"
 ```
 
 Installed aliases:
-- `op` -> `orvpass`
-- `opg` -> `orvpass get`
-- `opc` -> `orvpass cp` (copy password)
-- `opcu` -> `orvpass cpu` (copy username)
-- `opct` -> `orvpass cpt` (copy 2FA TOTP)
-- `opl` -> `orvpass list`
-- `opgen` -> `orvpass generate`
+- `op` $	o$ `orvpass`
+- `opg` $	o$ `orvpass get`
+- `opc` $	o$ `orvpass cp` (copy password)
+- `opcu` $	o$ `orvpass cpu` (copy username)
+- `opct` $	o$ `orvpass cpt` (copy 2FA TOTP)
+- `opl` $	o$ `orvpass list`
+- `opgen` $	o$ `orvpass generate`
 
 Generate autocomplete scripts:
 ```bash
@@ -267,6 +273,6 @@ orvpass completions fish > ~/.config/fish/completions/orvpass.fish
 
 ## 📄 License & Security
 
-- **License**: Apache License 2.0. Copyright (c) 2026 krtvysingh.
+- **License**: Apache License 2.0. Copyright (c) 2026 krtvyasingh.
 - **Security Policy**: See [SECURITY.md](SECURITY.md) for vulnerability disclosure procedures.
-- **Verification**: All 67 test suites pass in continuous integration.
+- **Verification**: All 35+ test suites pass in continuous integration with zero warnings.
