@@ -1,4 +1,4 @@
-use orvpass_core::crypto::{SecretKey, decrypt, derive_master_key, encrypt, generate_salt};
+use orvpass_core::crypto::{decrypt, derive_master_key, encrypt, generate_salt};
 use orvpass_core::models::{
     CreditCardData, ItemData, ItemType, LoginData, SecureNoteData, VaultItem,
 };

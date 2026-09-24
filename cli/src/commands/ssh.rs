@@ -1,4 +1,4 @@
-use orvpass_core::models::{ItemData, VaultItem};
+use orvpass_core::models::VaultItem;
 
 pub fn execute(items: &[VaultItem], action: Option<String>) {
     match action.as_deref() {
