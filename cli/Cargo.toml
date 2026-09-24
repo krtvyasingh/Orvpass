@@ -31,3 +31,4 @@ zeroize.workspace = true
 hex.workspace = true
 clap_mangen.workspace = true
 qrcode.workspace = true
+sha2.workspace = true
