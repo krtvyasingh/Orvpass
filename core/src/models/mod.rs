@@ -121,3 +121,15 @@ impl VaultItem {
         self.title.len() <= 1024 && self.tags.len() <= 100
     }
 }
+
+impl std::fmt::Display for ItemType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            ItemType::Login => write!(f, "Login"),
+            ItemType::SecureNote => write!(f, "SecureNote"),
+            ItemType::Custom => write!(f, "Custom"),
+            ItemType::Totp => write!(f, "Totp"),
+            ItemType::CreditCard => write!(f, "CreditCard"),
+        }
+    }
+}
