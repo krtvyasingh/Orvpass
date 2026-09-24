@@ -35,3 +35,10 @@ crossterm = "0.28"
 fuzzy-matcher = "0.3"
 clap_mangen = "0.2"
 qrcode = "0.14"
+
+[profile.release]
+opt-level = 3
+lto = "fat"
+codegen-units = 1
+panic = "abort"
+strip = true
