@@ -1,3 +1,4 @@
+#![allow(dead_code)]
 // High-Aesthetic CLI Formatter & Color Palette for Orvpass
 pub fn banner() {
     println!("\x1b[38;2;99;102;241m┌──────────────────────────────────────────────────────────────┐\x1b[0m");

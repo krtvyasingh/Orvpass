@@ -1,3 +1,4 @@
+#![allow(dead_code)]
 use orvpass_core::models::{ItemData, VaultItem};
 
 pub fn execute(json: bool, category: Option<String>) {

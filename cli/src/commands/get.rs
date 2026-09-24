@@ -1,3 +1,4 @@
+#![allow(dead_code)]
 use orvpass_core::models::{ItemData, VaultItem};
 use orvpass_core::totp::generate_totp;
 

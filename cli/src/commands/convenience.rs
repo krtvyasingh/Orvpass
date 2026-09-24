@@ -1,3 +1,4 @@
+#![allow(dead_code)]
 use crate::vault::database;
 use crate::clipboard;
 use orvpass_core::models::ItemData;

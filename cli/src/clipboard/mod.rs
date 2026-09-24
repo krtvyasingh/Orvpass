@@ -1,3 +1,4 @@
+#![allow(dead_code)]
 pub fn copy_with_notification(content: &str, timeout_secs: u64) {
     if let Ok(mut board) = arboard::Clipboard::new() {
         let _ = board.set_text(content);
