@@ -97,7 +97,7 @@ pub fn tf_provider() {
     println!("{}", serde_json::to_string_pretty(&schema).unwrap());
 }
 
-pub fn aws_vault(profile: &str, items: &[VaultItem]) {
+pub fn aws_vault(profile: &str, _items: &[VaultItem]) {
     let key_id = "AKIA".to_string()
         + &rand::rng()
             .random_range(100000000000u64..999999999999u64)

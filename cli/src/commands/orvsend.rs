@@ -1,6 +1,6 @@
 use rand::Rng;
 
-pub fn create(text: &str, expire_hours: u32, passphrase: Option<String>) {
+pub fn create(_text: &str, expire_hours: u32, passphrase: Option<String>) {
     let mut rng = rand::rng();
     let drop_id: String = (0..12)
         .map(|_| rng.random_range(b'a'..=b'z') as char)
